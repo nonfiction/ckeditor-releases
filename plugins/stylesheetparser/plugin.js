@@ -91,7 +91,18 @@
 			// Stylesheet parser is incompatible with filter (#10136).
 			editor.filter.disable();
 
-			var cachedDefinitions;
+			var cachedDefinitions, iframe, innerDoc, stylesheet;
+
+			// Inject an iframe and the editor stylesheet
+			iframe = document.createElement('iframe');
+			document.getElementsByTagName('body')[0].appendChild(iframe);
+			iframe.setAttribute('style', 'display: none');
+			innerDoc = iframe.contentDocument || iframe.contentDocument;
+			stylesheet = innerDoc.createElement('link');
+			stylesheet.setAttribute('type', 'text/css');
+			stylesheet.setAttribute('rel', 'stylesheet');
+			stylesheet.setAttribute('href', editor.config.contentsCss);
+			innerDoc.getElementsByTagName('head')[0].appendChild(stylesheet);
 
 			editor.once( 'stylesSet', function( evt ) {
 				// Cancel event and fire it again when styles are ready.
@@ -101,19 +112,21 @@
 				// when editor.document is ready), but before stylescombo reads styles set (priority 5).
 				editor.once( 'contentDom', function() {
 					editor.getStylesSet( function( definitions ) {
-						// Rules that must be skipped
-						var skipSelectors = editor.config.stylesheetParser_skipSelectors || ( /(^body\.|^\.)/i ),
-							// Rules that are valid
-							validSelectors = editor.config.stylesheetParser_validSelectors || ( /\w+\.\w+/ );
+						stylesheet.onload = function(){
+							// Rules that must be skipped
+							var skipSelectors = editor.config.stylesheetParser_skipSelectors || ( /(^body\.|^\.)/i ),
+								// Rules that are valid
+								validSelectors = editor.config.stylesheetParser_validSelectors || ( /\w+\.\w+/ );
 
-						cachedDefinitions = definitions.concat( LoadStylesCSS( editor.document.$, skipSelectors, validSelectors ) );
+							cachedDefinitions = definitions.concat( LoadStylesCSS( innerDoc, skipSelectors, validSelectors ) );
 
-						editor.getStylesSet = function( callback ) {
-							if ( cachedDefinitions )
-								return callback( cachedDefinitions );
+							editor.getStylesSet = function( callback ) {
+								if ( cachedDefinitions )
+									return callback( cachedDefinitions );
+							};
+
+							editor.fire( 'stylesSet', { styles: cachedDefinitions } );
 						};
-
-						editor.fire( 'stylesSet', { styles: cachedDefinitions } );
 					} );
 				} );
 			}, null, null, 1 );
