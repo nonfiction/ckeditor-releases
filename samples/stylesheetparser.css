@@ -1,0 +1,21 @@
+body {
+  font-family: Helvetica;
+}
+
+.ignored-rule {
+  line-height: 22em;
+}
+
+p.feature {
+  font-size: 2em;
+  font-weight: 100;
+}
+
+ul.crazy-bullet {
+  list-style: none;
+}
+
+ul.crazy-bullet li:before {
+  content: '\21C4';
+  padding: 0 10px 0 0;
+}

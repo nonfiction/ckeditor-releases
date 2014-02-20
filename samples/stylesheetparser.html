@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Using the stylesheetparser plugin</title>
+  <meta charset=utf-8>
+  <script src="/ckeditor.js"></script>
+  <script>
+    CKEDITOR.on('instanceCreated', function(event) {
+      var editor = event.editor,
+        element = editor.element;
+
+      editor.on( 'configLoaded', function() {
+        editor.config.toolbar = [
+          ['Link', 'Unlink', 'Image'],
+          ['Bold', 'Italic', 'NumberedList', 'BulletedList'],
+          ['RemoveFormat', 'Format', 'Styles', 'Source']
+        ];
+        editor.config.stylesSet = [];
+        editor.config.allowedContent = true;
+        editor.config.contentsCss = '/samples/stylesheetparser.css';
+        editor.config.extraPlugins = 'stylesheetparser';
+      });
+    });
+  </script>
+  <link href="/samples/sample.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/samples/stylesheetparser.css">
+</head>
+<body>
+<div>
+  <div contenteditable="true">
+    <h1>Stylesheet Parser</h1>
+    <p class="feature">
+      This version of the stylesheetparser plugin only uses the provided
+      stylesheet set by <code>config.contentsCss</code> while inline editing
+      rather than <strong>all</strong> the styles of the document. Much easier
+      to limit what's available through the editor this way.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+      est laborum.
+    </p>
+    <ul class="crazy-bullet">
+        <li>Hello</li>
+        <li>Hello</li>
+        <li>Hello</li>
+        <li>Hello</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
